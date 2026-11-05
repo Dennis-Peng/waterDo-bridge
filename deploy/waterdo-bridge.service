@@ -1,0 +1,34 @@
+[Unit]
+Description=WaterDo loopback bridge with encrypted systemd credentials
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=@SERVICE_USER@
+Group=@SERVICE_GROUP@
+WorkingDirectory=@PROJECT_DIR@
+ExecStart=/usr/bin/node src/cli.mjs serve --enable-writes --systemd-credential
+LoadCredentialEncrypted=waterdo-token:/etc/credstore.encrypted/waterdo-token
+Environment=NODE_ENV=production
+UnsetEnvironment=NODE_OPTIONS NODE_PATH
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=180s
+UMask=0077
+NoNewPrivileges=true
+ProtectSystem=strict
+ReadWritePaths=@PROJECT_DIR@/.private
+PrivateTmp=true
+ProtectHome=read-only
+LimitCORE=0
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=waterdo-bridge
+
+[Install]
+WantedBy=multi-user.target

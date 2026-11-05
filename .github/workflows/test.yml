@@ -1,0 +1,20 @@
+name: Test
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install ACL utilities for synthetic credential tests
+        run: sudo apt-get update && sudo apt-get install -y acl
+      - name: Test with synthetic data only
+        run: npm test
+      - name: Validate installer syntax
+        run: bash -n deploy/install-systemd.sh

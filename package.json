@@ -1,0 +1,17 @@
+{
+  "name": "waterdo-bridge",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Single-user WaterDo bridge with opt-in idempotent writes for CLI, REST and MCP",
+  "repository": { "type": "git", "url": "https://github.com/Dennis-Peng/waterDo-bridge.git" },
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "configure": "node src/cli.mjs configure",
+    "start": "node src/cli.mjs serve",
+    "demo": "node src/cli.mjs serve --demo",
+    "status": "node src/cli.mjs status",
+    "mcp": "node src/cli.mjs mcp"
+  }
+}

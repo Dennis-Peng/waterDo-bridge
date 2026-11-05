@@ -1,0 +1,30 @@
+# Local authorization, keys, journals and diagnostic captures
+.private/
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+*.vault.json
+*.har
+*.log
+*.jsonl
+*.db
+*.sqlite*
+/core
+/core.*
+local-key.txt
+credentials/
+secrets/
+
+# Local research and non-public release material
+research/
+.public-release/
+*.local
+
+# Generated artifacts
+node_modules/
+coverage/
+.DS_Store
