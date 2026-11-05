@@ -295,8 +295,13 @@ test('rendered synthetic template passes systemd-analyze verify without installi
   const unit = await readFile(new URL('../deploy/waterdo-bridge.service', import.meta.url), 'utf8');
   const project = await mkdtemp(join(tmpdir(), 'waterdo-unit-verify-test-'));
   await mkdir(join(project, '.private'), { mode: 0o700 });
+  // CI setup-node may install outside /usr/bin. This synthetic unit uses the
+  // running test executable; static tests still enforce /usr/bin/node in the
+  // actual template and installer. Never install or start this rendered unit.
+  assert.match(process.execPath, /^\/[A-Za-z0-9_./-]+$/);
   const rendered = unit.replaceAll('@SERVICE_USER@', String(process.getuid()))
-    .replaceAll('@SERVICE_GROUP@', String(process.getgid())).replaceAll('@PROJECT_DIR@', project);
+    .replaceAll('@SERVICE_GROUP@', String(process.getgid())).replaceAll('@PROJECT_DIR@', project)
+    .replace('ExecStart=/usr/bin/node ', `ExecStart=${process.execPath} `);
   assert.ok(!/@[A-Z_]+@/.test(rendered));
   const path = join(project, 'waterdo-bridge.service'); await writeFile(path, rendered, { mode: 0o600 });
   await exec('/usr/bin/systemd-analyze', ['verify', path], {
