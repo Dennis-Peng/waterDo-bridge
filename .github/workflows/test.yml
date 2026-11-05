@@ -8,13 +8,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: '24'
       - name: Install ACL utilities for synthetic credential tests
         run: sudo apt-get update && sudo apt-get install -y acl
       - name: Test with synthetic data only
-        run: npm test
+        run: >-
+          node --test
+          --test-reporter=spec --test-reporter-destination=stdout
+          --test-reporter=./test/ci-reporter.mjs --test-reporter-destination=stdout
+          test/*.test.mjs
       - name: Validate installer syntax
         run: bash -n deploy/install-systemd.sh
